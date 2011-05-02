@@ -1,7 +1,8 @@
 from urllib import urlencode
 from urllib2 import urlopen
 from xml.dom.minidom import parse as parse_xml
-from .utils import get_text_by_tag, PolicyParameters, NessusPolicy, NessusScan
+from .utils import get_text_by_tag, PolicyParameters, NessusPolicy, \
+        NessusReport, NessusScan
 
 
 class NessusConnection(object):
@@ -41,9 +42,7 @@ class NessusConnection(object):
         reply = self._get_reply(url)
         node_policies = reply.getElementsByTagName("policy")
         for node_policy in node_policies:
-            policy_id = int(get_text_by_tag(node_policy, 'policyID'))
-            policy_name = get_text_by_tag(node_policy, 'policyName')
-            policies.append(dict(policy_id=policy_id, policy_name=policy_name))
+            policies.append(NessusPolicy.from_node(node_policy))
         
         return policies
 
@@ -78,7 +77,30 @@ class NessusConnection(object):
         return NessusScan.from_node(node_scan)
 
     def list_reports(self):
-        url = self._url + "/report/list"
+        if not self._authenticated: self._authenticate()
 
+        reports = [] 
+
+        url = self._url + "/report/list"
+        reply = self._get_reply(url)
+
+        node_reports = reply.getElementsByTagName("report")
+        for node_report in node_reports:
+            reports.append(NessusReport.from_node(node_report))
+
+        return reports
+ 
     def download_report(self, report_name, fp):
+        if not self._authenticated: self._authenticate()
+
         url = self._url + "/file/report/download"
+        params = dict(token=self._token, report=report_name)
+        f = urlopen(url, urlencode(params))
+
+        # Now write it to an output file.
+        while True:
+            data = f.read(4096)
+            if not data:
+                break
+
+            fp.write(data)
