@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reply>
+<seq></seq>
+<status>OK</status>
+<contents><reports>
+<report>
+<name>59c2cd96-079f-380c-0f46-95a8fdc0b735b74c8fc41435e03b</name>
+<status>completed</status><readableName>new scan</readableName>
+<timestamp>1304375023</timestamp>
+</report>
+<report>
+<name>5e6b67ca-5b66-5c50-6b97-4075870050cca5ebc4fa9155dacc</name>
+<status>completed</status><readableName>new scan</readableName>
+<timestamp>1304373891</timestamp>
+</report>
+<report>
+<name>73f8bc9c-e5fb-0687-d483-baa215ab1b577e350d022c048ff4</name>
+<status>running</status><readableName>new scan</readableName>
+<timestamp>1304807892</timestamp>
+</report>
+<report>
+<name>b5376ad1-fa77-7485-b71b-865c73b015d1b26db6531e561db0</name>
+<status>running</status><readableName>new scan</readableName>
+<timestamp>1304807892</timestamp>
+</report>
+<report>
+<name>d7994121-4a89-5079-ee52-b23441e8e6b8982208d29f668d74</name>
+<status>running</status><readableName>new scan</readableName>
+<timestamp>1304807887</timestamp>
+</report>
+</reports>
+</contents>
+</reply>

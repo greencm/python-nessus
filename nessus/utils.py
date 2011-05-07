@@ -19,7 +19,7 @@ class PolicyParameters(dict):
     def smb_credentials(self, username, password):
         self["Login configurations[entry]:SMB account :"] = username
         self["Login configurations[password]:SMB password :"] = password
-        
+
     def ssh_credentials(self, username, password):
         self["SSH settings[entry]:SSH user name :"] = username
         self["SSH settings[password]:SSH password (unsafe!) :"] = password
