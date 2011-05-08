@@ -26,7 +26,7 @@ Now we can list the policies and find the one we created::
 
     policies = conn.list_policies()
     for policy_back in policies:
-        if policy_back.id == policy_back:
+        if policy_back.id == policy.id:
             print("Found it")
             break
 
