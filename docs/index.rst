@@ -8,6 +8,14 @@ Welcome to python-nessus
 
 This library makes it easy to use the Nessus vulnerability scanner from python. With this you can create policies, schedule scans, list reports and take full advantage of the Nessus XMLrpc interface.
 
+Start with installing it::
+
+    $ pip install nessus
+
+Or using easy_install::
+
+    $ easy_install -U nessus
+
 Here is how we establish a connection to the server::
 
     from nessus import NessusConnection
