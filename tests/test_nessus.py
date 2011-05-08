@@ -82,7 +82,7 @@ class TestNessusConnection(object):
         urlopen.side_effect = self._fake_method
 
         conn = self._get_conn()
-        scan = conn.create_scan(9, "new policy", ["127.0.0.1"])
+        scan = conn.create_scan(9, "new scan", ["127.0.0.1"])
         assert scan.uuid == ("73f8bc9c-e5fb-0687-d483-"
                              "baa215ab1b577e350d022c048ff4")
         assert scan.owner == "ahall"

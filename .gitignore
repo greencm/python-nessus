@@ -25,3 +25,4 @@ data/
 .tox
 out.txt
 junit*.xml
+_build
