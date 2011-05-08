@@ -3,3 +3,5 @@ tests
 *.egg-info
 junit*
 .tox
+dist/
+docs/
