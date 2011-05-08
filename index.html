@@ -1,0 +1,131 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to python-nessus &mdash; python-nessus v0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="python-nessus v0.0.1 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="#">python-nessus v0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="welcome-to-python-nessus">
+<h1>Welcome to python-nessus<a class="headerlink" href="#welcome-to-python-nessus" title="Permalink to this headline">¶</a></h1>
+<p>This library makes it easy to use the Nessus vulnerability scanner from python. With this you can create policies, schedule scans, list reports and take full advantage of the Nessus XMLrpc interface.</p>
+<p>Here is how we establish a connection to the server:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">nessus</span> <span class="kn">import</span> <span class="n">NessusConnection</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">NessusConnection</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">,</span> <span class="s">&#39;password&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After initialising the connection we can now create a simple policy:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">nessus</span> <span class="kn">import</span> <span class="n">PolicyParameters</span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">PolicyParameters</span><span class="p">()</span>
+<span class="n">params</span><span class="o">.</span><span class="n">ssh_credentials</span><span class="p">(</span><span class="s">&#39;ahall&#39;</span><span class="p">,</span> <span class="s">&#39;temp123&#39;</span><span class="p">)</span>
+<span class="n">policy</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">create_policy</span><span class="p">(</span><span class="s">&#39;policy name&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The params are optional but here we want to demonstrate how easy it is to add credentials.</p>
+<p>Now we can list the policies and find the one we created:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">policies</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">list_policies</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">policy_back</span> <span class="ow">in</span> <span class="n">policies</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">policy_back</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">policy</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Found it&quot;</span><span class="p">)</span>
+        <span class="k">break</span>
+</pre></div>
+</div>
+<p>Now if we want to delete the policy we can do it like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">conn</span><span class="o">.</span><span class="n">delete_policy</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">policy</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we&#8217;re ready to schedule a scan that will scan target 192.168.1.0/24 using the policy that we created (given we didn&#8217;t delete it!):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">scan</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">create_scan</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s">&quot;new scan&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;192.168.1.0/24&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Now we can lists the reports and check if our scan is complete:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">report</span> <span class="ow">in</span> <span class="n">conn</span><span class="o">.</span><span class="n">list_reports</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">report</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">scan</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">and</span> <span class="n">report</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">report</span><span class="o">.</span><span class="n">STATUS_COMPLETE</span><span class="p">:</span>
+        <span class="k">break</span>
+</pre></div>
+</div>
+<p>NOTE: The scan uuid becomes the report name, that&#8217;s the way Nessus works.</p>
+<p>Now lets download the report into /tmp/myreport.nessus:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/tmp/myreport.nessus&#39;</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">):</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">download_report</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span> <span class="n">np</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="#">python-nessus v0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Alfred Hall.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
