@@ -1,0 +1,5 @@
+tests
+*.pyc
+*.egg-info
+junit*
+.tox
