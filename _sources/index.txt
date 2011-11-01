@@ -56,5 +56,5 @@ NOTE: The scan uuid becomes the report name, that's the way Nessus works.
 
 Now lets download the report into /tmp/myreport.nessus::
 
-    with open('/tmp/myreport.nessus', 'wb'):
+    with open('/tmp/myreport.nessus', 'wb') as np:
         conn.download_report(scan.uuid, np)
