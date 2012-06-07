@@ -11,7 +11,7 @@ This library makes it easy to use the Nessus vulnerability scanner from python. 
 Here is how we establish a connection to the server::
 
     from nessus import NessusConnection
-    conn = NessusConnection('username', 'password')
+    conn = NessusConnection('username', 'password','127.0.0.1')
 
 After initialising the connection we can now create a simple policy::
 
