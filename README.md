@@ -10,4 +10,6 @@ Per Alfred Hall (original author), the licensing should be the BSD license.
 
 # Changes
 
-Added a requirement on poster https://bitbucket.org/chrisatlee/poster to handle uploads
+Added a requirement on poster https://bitbucket.org/chrisatlee/poster
+to handle uploads; This is only done if you want to use the
+upload_file or import_policy methods.
