@@ -56,7 +56,6 @@ class NessusConnection(object):
                                  filetype='application/octet-stream'),)
 
         datagen, headers = multipart_encode(params)
-        import pdb; pdb.set_trace()
         request = Request(url, datagen, headers)
 
         opener = register_openers()
