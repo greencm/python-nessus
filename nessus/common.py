@@ -1,8 +1,17 @@
+_FILEUPLOAD=False
+
+from urllib2 import urlopen, Request, build_opener
 from urllib import urlencode
-from urllib2 import urlopen
 from xml.dom.minidom import parse as parse_xml
 from .utils import get_text_by_tag, PolicyParameters, NessusPolicy, \
         NessusReport, NessusScan
+
+try:
+    from poster.encode import multipart_encode, MultipartParam
+    from poster.streaminghttp import register_openers
+    _FILEUPLOAD=True
+except ImportError:
+    pass
 
 
 class NessusConnection(object):
@@ -31,6 +40,61 @@ class NessusConnection(object):
         reply = self._get_reply(url, params)
         self._token = get_text_by_tag(reply, 'token')
         self._authenticated = True
+
+    def upload_file(self, name, fd):
+        assert _FILEUPLOAD, "poster needs to be installed, hg+https://bitbucket.org/chrisatlee/poster"
+        
+        if not self._authenticated:
+            self._authenticate()
+
+        url = self._url + "/file/upload"
+
+
+        params = (MultipartParam(name='Filedata',
+                                 fileobj=fd,
+                                 filename=name,
+                                 filetype='application/octet-stream'),)
+
+        datagen, headers = multipart_encode(params)
+        import pdb; pdb.set_trace()
+        request = Request(url, datagen, headers)
+
+        opener = register_openers()
+        opener.addheaders.append(('Cookie', 'token=%s' % self._token))
+        
+        reply = opener.open(request)
+        
+        dom = parse_xml(reply)
+
+        reply_dom = dom.getElementsByTagName('reply')[0]
+
+        status = get_text_by_tag(reply_dom, 'status')
+        if status != 'OK':
+            raise Exception("Upload Failed")
+
+        return reply
+
+    def import_policy(self, name, f):
+         """
+         Given a file, first upload it to the nessus scanner with a
+         given filename and then instruct the nessus scanner to import
+         the policy
+         """
+         self.upload_file(name, f)
+
+         url = self._url + "/file/policy/import"
+         
+         # generate a sequence number we can rely on
+         seq  = abs(hash(name)) % 10000000
+         params = dict(seq=seq,file=name)
+
+         reply = self._get_reply(url, params)
+
+         status = get_text_by_tag(reply, 'status')
+         if status != 'OK':
+             raise Exception("Policy Import Failed")
+         
+         return reply
 
     def list_policies(self):
         """Lists all policies"""
